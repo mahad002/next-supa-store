@@ -1,73 +1,74 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import bcrypt from 'bcryptjs'; // Import bcryptjs library
+import bcrypt from 'bcryptjs';
+import Cookies from 'js-cookie';
 import { supabase } from '../utils/supabaseClient';
+import useUserStore from '../stores/userStore';
+import { useRouter } from 'next/navigation';
 
 export default function Login() {
+  const setUser = useUserStore((state) => state.setUser);
+  const router = useRouter();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    async function getUser() {
-      // const { user, error } = await supabase.auth.user();
-      // if (error) {
-      //   console.error('Error fetching user:', error.message);
-      // } else {
-      //   setUser(user);
-      // }
-      setLoading(false);
-    }
-    getUser();
-  }, []);
+    setLoading(false);
+  },[]);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
     try {
-      // Fetch user data from the database based on the provided email
       const { data: users, error } = await supabase
         .from('users')
         .select('*')
         .eq('email', email);
-  
+
       if (error) {
         throw error;
       }
-  
+
       if (!users || users.length === 0) {
         throw new Error('User not found');
       }
-  
+
       const user = users[0];
-  
-      // Compare the provided password with the hashed password stored in the database
+
       const passwordMatch = await bcrypt.compare(password, user.password);
-  
+
       if (!passwordMatch) {
         throw new Error('Invalid password');
       }
-  
+
+      // Set the user data in the Zustand store
+      setUser(user);
+
+      // Redirect the user to the appropriate dashboard based on their role
+      if (user.role === 'buyer') {
+        router.push('/buyerDashboard');
+      } else if (user.role === 'supplier') {
+        router.push('/supplierDashboard');
+      } else {
+        // Handle other roles or scenarios
+      }
+
       console.log('User signed in successfully:', user);
-  
-      // Clear the password field
       setPassword('');
-      // Optionally, redirect the user to a dashboard or another route
+      setEmail('');
+      
     } catch (error) {
       console.error('Error signing in:', error.message);
+      alert(error.message);
     }
   };
-  
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-  };
-
-  if (loading) return <h1 className='items-center'>Loading...</h1>;
+  if(loading) return (<div>Loading...</div>);
 
   return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in</h2>
@@ -99,13 +100,13 @@ export default function Login() {
         </form>
       </div>
       <div className="text-center mt-2 text-black">
-          <p>
-            Don't have an account?{' '}
-            <a href="/signup" className="text-blue-500 hover:text-blue-800">
-              Sign up
-            </a>
-          </p>
-        </div>
+        <p>
+          Don't have an account?{' '}
+          <a href="/signup" className="text-blue-500 hover:text-blue-800">
+            Sign up
+          </a>
+        </p>
+      </div>
     </div>
   );
 }
