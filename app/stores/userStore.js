@@ -1,5 +1,5 @@
 // store/user.js
-import {create} from 'zustand';
+import { createStore as create } from 'zustand'
 
 const useUserStore = create((set) => ({
   user: null,
