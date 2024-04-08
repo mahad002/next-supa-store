@@ -48,9 +48,9 @@ export default function Login() {
 
       // Redirect the user to the appropriate dashboard based on their role
       if (user.role === 'buyer') {
-        router.push('/buyerDashboard');
+        router.push('http://localhost:3000/buyerDashboard');
       } else if (user.role === 'supplier') {
-        router.push('/supplierDashboard');
+        router.push('http://localhost:3000/supplierDashboard');
       } else {
         // Handle other roles or scenarios
       }
