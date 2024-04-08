@@ -16,7 +16,7 @@ const BuyerDashboard = () => {
 
 export default function ClientSupplierDashboard() {
     // Ensure rendering only on the client side
-    if (typeof window === 'undefined') return null;
+    // if (typeof window === 'undefined') return null;
   
     return <BuyerDashboard />;
   }
