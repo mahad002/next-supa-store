@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import useUserStore from '../stores/userStore';
+import {useUserStore} from '../stores/userStore';
 import { useClient } from 'next/client';
 
 const BuyerDashboard = () => {
