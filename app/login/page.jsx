@@ -8,7 +8,7 @@ import {useUserStore} from '../stores/user';
 import {useRouter} from "next/router";
 
 export default function Login() {
-  const setUser = useUserStore((state) => state.setU  ser);
+  const setUser = useUserStore((state) => state.setUser);
   const router = useRouter();
 
   const [email, setEmail] = useState('');
