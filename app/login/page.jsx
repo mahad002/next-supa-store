@@ -4,11 +4,11 @@ import { useState, useEffect } from 'react';
 import bcrypt from 'bcryptjs';
 import Cookies from 'js-cookie';
 import { supabase } from '../utils/supabaseClient';
-import {useUserStore} from '../stores/userStore';
+import {useUserStore} from '../stores/user';
 import {useRouter} from "next/router";
 
 export default function Login() {
-  const setUser = useUserStore((state) => state.setUser);
+  const setUser = useUserStore((state) => state.setU  ser);
   const router = useRouter();
 
   const [email, setEmail] = useState('');
