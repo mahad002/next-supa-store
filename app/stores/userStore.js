@@ -8,4 +8,4 @@ const useUserStore = create((set) => ({
   logout: () => set({ user: null, isAuthenticated: false }),
 }));
 
-export default useUserStore;
+export {useUserStore};
