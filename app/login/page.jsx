@@ -1,11 +1,9 @@
-'use client'
-
-import { useState, useEffect } from 'react';
+'use client';
+import React, { useState, useEffect } from 'react';
 import bcrypt from 'bcryptjs';
-import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 import { supabase } from '../utils/supabaseClient';
-import {useUserStore} from '../stores/user';
-import {useRouter} from "next/router";
+import useUserStore from '../stores/userStore';
 
 export default function Login() {
   const setUser = useUserStore((state) => state.setUser);
@@ -17,7 +15,7 @@ export default function Login() {
 
   useEffect(() => {
     setLoading(false);
-  },[]);
+  }, []);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -43,14 +41,17 @@ export default function Login() {
         throw new Error('Invalid password');
       }
 
+      // Save the user data in localStorage
+      localStorage.setItem('user', JSON.stringify(user));
+
       // Set the user data in the Zustand store
       setUser(user);
 
       // Redirect the user to the appropriate dashboard based on their role
       if (user.role === 'buyer') {
-        router.push('http://localhost:3000/buyerDashboard');
+        router.push('/buyerDashboard');
       } else if (user.role === 'supplier') {
-        router.push('http://localhost:3000/supplierDashboard');
+        router.push('/supplierDashboard');
       } else {
         // Handle other roles or scenarios
       }
@@ -58,14 +59,14 @@ export default function Login() {
       console.log('User signed in successfully:', user);
       setPassword('');
       setEmail('');
-      
+
     } catch (error) {
       console.error('Error signing in:', error.message);
       alert(error.message);
     }
   };
 
-  if(loading) return (<div>Loading...</div>);
+  if (loading) return (<div>Loading...</div>);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">

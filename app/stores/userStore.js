@@ -1,5 +1,5 @@
 // store/user.js
-import { createStore as create } from 'zustand'
+import {create} from 'zustand';
 
 const useUserStore = create((set) => ({
   user: null,
@@ -8,4 +8,4 @@ const useUserStore = create((set) => ({
   logout: () => set({ user: null, isAuthenticated: false }),
 }));
 
-export {useUserStore};
+export default useUserStore;
